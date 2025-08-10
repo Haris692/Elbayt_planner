@@ -3,114 +3,140 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>EL BAYT — Planner (Supabase)</title>
+<title>EL BAYT — Planner (Supabase · PWA)</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#E35E83">
+<link rel="icon" href="./icons/icon-192.svg" type="image/svg+xml">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#243133; --muted:#5d6f70; --paper:#fffdfb; --card:#ffffff;
+    --ink:#1e2728; --muted:#5d6f70; --paper:#fffefc; --card:#ffffff;
     --radius:18px; --shadow: 0 18px 40px rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.05);
     --s1:#FDE3E9; --s2:#F9A6BE; --s3:#E35E83;
     --i1:#EAF5FF; --i2:#A8D4FF; --i3:#4C9EEB;
     --r1:#FFF0E6; --r2:#FFBE95; --r3:#F57C42;
-    --a1:#F1F6E9; --a2:#CDE3A1; --a3:#7BA640;
-    --b1:#F4EEFF; --b2:#C6B6F3; --b3:#7B66E9;
-    --n1:#FFF8E5; --n2:#FFE18A; --n3:#FFB400;
-    --k1:#EFFFF1; --k2:#B8F5C2; --k3:#4CCB6E;
-    --w1:#E8F9FB; --w2:#9CE7F0; --w3:#2AB3C9;
-    --d1:#F7EEFF; --d2:#D9B8FF; --d3:#9A5EF7;
-    --c1:#FFF1F1; --c2:#FFBABA; --c3:#FF6B6B;
     --acc1: var(--s1); --acc2: var(--s2); --acc3: var(--s3);
+    --ring: 0 0 0 3px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#101414; --card:#0f1415; --ink:#e7f0f0; --muted:#9fb1b3; }
+    body{ background: radial-gradient(1200px 800px at 80% -100px, #0f1717 0%, #0c1213 60%), linear-gradient(180deg,#0c1213,#0c1213 120vh); }
   }
   *{box-sizing:border-box}
-  body{margin:0; color:var(--ink); background: radial-gradient(1200px 800px at 80% -100px, #fff4f1 0%, #ffffff 60%), linear-gradient(180deg,#ffffff,#fffaf6 120vh);
-       font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-  .app{max-width:1280px; margin:24px auto; padding:0 16px 80px;}
-  header{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap}
-  .brand{display:flex; gap:14px; align-items:center}
-  .logo{width:50px; height:50px; border-radius:14px; background: radial-gradient(100% 100% at 30% 20%, var(--acc2), var(--acc3)); box-shadow: var(--shadow); position:relative; overflow:hidden;}
-  h1{margin:0; font-size:28px; letter-spacing:.3px}
-  .subtitle{margin-top:2px; font-size:13px; color:var(--muted)}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; color:var(--ink);
+    background: radial-gradient(1200px 800px at 80% -100px, #fff4f1 0%, #ffffff 60%), linear-gradient(180deg,#ffffff,#fffaf6 120vh);
+    font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    font-size: clamp(14px, 0.9vw + 10px, 16px);
+  }
+  .app{max-width:1280px; margin:18px auto 96px; padding:0 16px 80px;}
+  header{position:sticky; top:0; z-index:30; backdrop-filter: saturate(1.2) blur(6px); background: color-mix(in oklab, var(--paper) 80%, transparent); border-bottom:1px solid #ececec22}
+  .header-inner{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; flex-wrap:wrap}
+  .brand{display:flex; gap:12px; align-items:center}
+  .logo{width:42px; height:42px; border-radius:12px; background: radial-gradient(100% 100% at 30% 20%, var(--acc2), var(--acc3)); box-shadow: var(--shadow); position:relative; overflow:hidden;}
+  h1{margin:0; font-size: clamp(18px, 1.2vw + 14px, 28px); letter-spacing:.3px}
+  .subtitle{margin-top:2px; font-size:12px; color:var(--muted)}
   .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-  select,button,input[type="email"],input[type="password"]{appearance:none; border:1px solid #e9e9e9; border-radius:14px; padding:10px 14px; font-weight:600; box-shadow: var(--shadow);}
-  select{background:#fff; color:var(--ink);}
+  select,button,input[type="email"],input[type="password"]{
+    appearance:none; border:1px solid #e9e9e9; border-radius:14px; padding:10px 14px; font-weight:600; box-shadow: var(--shadow);
+    background:#fff; color:var(--ink);
+  }
   button.primary{background:var(--acc3); color:#fff; border-color:transparent; cursor:pointer}
-  button.ghost{background:#fff; color:var(--muted); border-color:#eee; cursor:pointer}
-  nav.months{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin:14px 0 10px;}
-  .month{border:1px solid #eee; background: linear-gradient(180deg,#fff, var(--acc1)); border-radius:14px; padding:10px; text-align:center; font-weight:700; color:#364243; cursor:pointer; position:relative; overflow:hidden;}
-  .month .spark{position:absolute; right:-10px; top:-10px; width:56px; height:56px; background: radial-gradient(closest-side,var(--acc2), transparent); filter: blur(8px); opacity:.6}
-  .month.active{outline: 0 0 0 3px rgba(0,0,0,.06); border-color: transparent; color:#0f1b1c; transform: translateY(-1px);}
-  .banner{margin-top:8px; position:relative; border-radius:22px; padding:22px; overflow:hidden; background: linear-gradient(120deg, var(--acc2), var(--acc1)); border:1px solid #eee;}
-  .banner h2{margin:0; font-size:22px}
-  .banner .quote{color:#1d2a2b; opacity:.85; font-size:14px; margin-top:6px}
-  .grid{display:grid; grid-template-columns: 1.15fr 1.85fr; gap:16px; margin-top:16px}
+  button.ghost{background:var(--card); color:var(--muted); border-color:#e1e6e6; cursor:pointer}
+  nav.months{display:grid; grid-auto-flow:column; grid-auto-columns:minmax(90px,1fr); gap:10px; margin:10px 0 14px; overflow:auto; scroll-snap-type:x mandatory; padding-bottom:6px}
+  .month{scroll-snap-align:center; border:1px solid #e6ecec; background: linear-gradient(180deg,#fff, var(--acc1)); border-radius:14px; padding:10px; text-align:center; font-weight:700; color:#364243; cursor:pointer; position:relative; overflow:hidden; min-width:90px}
+  .month.active{outline: var(--ring); border-color: transparent; color:#0f1b1c; transform: translateY(-1px);}
+  .banner{margin-top:6px; position:relative; border-radius:22px; padding:18px; overflow:hidden; background: linear-gradient(120deg, var(--acc2), var(--acc1)); border:1px solid #eee;}
+  .grid{display:grid; grid-template-columns: 1.1fr 1.9fr; gap:16px; margin-top:16px}
   @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
-  .card{background:var(--card); border:1px solid #f1f1f1; border-radius:18px; padding:16px; box-shadow: var(--shadow);}
-  .card h3{margin:0 0 10px; font-size:18px; display:flex; align-items:center; gap:8px}
-  .field label{display:block; font-size:13px; color:var(--muted); margin-bottom:6px}
-  .field input[type="text"], .field textarea, .field select{width:100%; border:1px solid #efefef; border-radius:14px; padding:11px 12px; background:#fff; font: inherit; color:var(--ink); box-shadow: inset 0 -20px 80px rgba(0,0,0,.02);}
-  .field textarea{min-height:110px; resize:vertical}
-  .hint{font-size:12.5px; color:var(--muted); margin-top:6px}
-  .prayer{overflow:auto; border-radius:14px; border:1px solid #efefef; background: linear-gradient(180deg,#fff, var(--acc1));}
+  .card{background:var(--card); border:1px solid #ecf0f0; border-radius:18px; padding:14px; box-shadow: var(--shadow);}
+  .pill{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:var(--acc1); border:1px solid #e7eded; margin:4px 6px 0 0; color:#405051; font-weight:600; font-size:13px}
+
+  /* Tabs (bottom nav on mobile) */
+  .tabs{position:sticky; top:64px; z-index:20; margin-top:8px}
+  .tabbar{display:none}
+  @media (max-width: 760px){
+    .tabbar{display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid #e7eded; padding:10px; gap:10px; justify-content:space-around; z-index:50}
+    .tabbar button{flex:1; padding:10px 12px; border-radius:12px; border:1px solid #e7eded; background:#fff; font-weight:700}
+    .tabbar button.active{background:var(--acc3); border-color:transparent; color:#fff}
+  }
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+
+  /* Prayer */
+  .prayer{border-radius:14px; border:1px solid #e9efef; background: linear-gradient(180deg,#fff, var(--acc1)); overflow:auto}
   table{border-collapse:separate; border-spacing:0; width:100%; background:transparent}
-  th, td{padding:10px 10px; border-bottom:1px solid #f2f2f2; text-align:center; white-space:nowrap}
+  th, td{padding:10px 10px; border-bottom:1px solid #eef2f2; text-align:center; white-space:nowrap}
   th{position:sticky; top:0; background:linear-gradient(180deg,#fff,var(--acc1)); z-index:1}
-  tr:last-child td{border-bottom:none}
   .daycol{text-align:left; font-weight:700; color:#3a484a}
-  .wksep td{background:#fff9; font-weight:700}
   .points{font-weight:700}
-  .progress{height:10px; background:#f1f1f1; border-radius:999px; overflow:hidden}
+  input[type="checkbox"]{ width:22px; height:22px; accent-color: var(--acc3) }
+
+  /* Prayer mobile cards */
+  .prayer-mobile{display:none; gap:10px}
+  .p-card{border:1px solid #e7eded; border-radius:14px; background:#fff; padding:12px}
+  .p-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px}
+  .p-grid{display:grid; grid-template-columns: repeat(5, 1fr); gap:10px; align-items:center}
+  .p-grid label{display:flex; flex-direction:column; align-items:center; font-size:12px; color:#475657; gap:6px}
+  .p-goal{display:grid; grid-template-columns: 1fr auto auto; gap:8px; align-items:center; margin-top:8px}
+  .p-goal input[type="text"]{height:40px}
+  .chip{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid #e4ebeb; background:var(--acc1);}
+  @media (max-width: 760px){ .prayer{display:none} .prayer-mobile{display:grid} }
+
+  .progress{height:10px; background:#eef3f3; border-radius:999px; overflow:hidden}
   .bar{height:100%; background:var(--acc3); width:0%}
-  .pill{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:var(--acc1); border:1px solid #efefef; margin:4px 6px 0 0; color:#405051; font-weight:600; font-size:13px}
+
   /* Quran planner */
   .q-grid{display:grid; grid-template-columns:1fr; gap:12px}
-  .q-plan{border:1px solid #efefef; border-radius:16px; padding:12px; background: linear-gradient(180deg,#fff, var(--acc1));}
-  .q-title{display:flex; align-items:center; justify-content:space-between; gap:12px}
-  .q-title strong{font-size:16px}
+  .q-plan{border:1px solid #e7eded; border-radius:16px; padding:12px; background: linear-gradient(180deg,#fff, var(--acc1));}
+  .q-title{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+  .q-controls{display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; align-items:end}
+  @media (max-width: 680px){ .q-controls{grid-template-columns:1fr; } }
   .q-verses{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
-  .v-chip{display:inline-flex; align-items:center; gap:6px; padding:6px 8px; border-radius:999px; border:1px solid #eaeaea; background:#fff; font-size:12.5px}
-  .v-chip input{accent-color: var(--acc3)}
-  .q-progress{display:flex; align-items:center; gap:10px; margin-top:8px}
-  .q-pct{font-weight:700}
-  /* Auth */
-  .auth{display:flex; gap:8px; align-items:center}
-  .auth input{min-width:200px}
-  .sep{height:1px; background:#eee; margin:12px 0}
+  .v-chip{display:inline-flex; align-items:center; gap:6px; padding:8px 10px; border-radius:999px; border:1px solid #eaeaea; background:#fff; font-size:12.5px}
+  .v-chip input{accent-color: var(--acc3); width:20px; height:20px}
+
+  /* Notes */
+  .field label{display:block; font-size:13px; color:var(--muted); margin-bottom:6px}
+  .field input[type="text"], .field textarea, .field select{width:100%; border:1px solid #e7eded; border-radius:14px; padding:11px 12px; background:#fff; font: inherit; color:var(--ink); box-shadow: inset 0 -20px 80px rgba(0,0,0,.02);}
+  .field textarea{min-height:110px; resize:vertical}
+
   /* Toast & confetti */
-  .toast{position:fixed; right:16px; bottom:16px; background:#ffffff; border:1px solid #e8e8e8; box-shadow: var(--shadow); padding:12px 14px; border-radius:14px; font-weight:700; color:#2f3b3c; display:none}
+  .toast{position:fixed; right:16px; bottom:80px; background:#ffffff; border:1px solid #e8e8e8; box-shadow: var(--shadow); padding:12px 14px; border-radius:14px; font-weight:700; color:#2f3b3c; display:none}
   .confetti{position:fixed; pointer-events:none; left:0; top:0; width:100%; height:100%; overflow:hidden}
   .c{position:absolute; font-size:20px; animation: confetti 1200ms ease-out forwards}
-  @keyframes confetti{
-    0%{ transform: translate(var(--x), calc(var(--y) - 20px)) scale(.8); opacity:0 }
-    10%{ opacity:1 }
-    100%{ transform: translate(var(--x2), var(--y2)) rotate(25deg); opacity:0 }
-  }
+  @keyframes confetti{ 0%{ transform: translate(var(--x), calc(var(--y) - 20px)) scale(.8); opacity:0 } 10%{ opacity:1 } 100%{ transform: translate(var(--x2), var(--y2)) rotate(25deg); opacity:0 } }
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>EL BAYT — Planner</h1>
-        <div class="subtitle">Supabase • Comptes & synchronisation • Prière • Coran • Récompenses</div>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>EL BAYT — Planner</h1>
+          <div class="subtitle">Supabase • PWA • Responsive</div>
+        </div>
       </div>
-    </div>
-    <div class="toolbar">
-      <div class="auth" id="authBox">
-        <input type="email" id="email" placeholder="email"/>
-        <input type="password" id="password" placeholder="mot de passe"/>
-        <button class="ghost" id="btnSignup">Créer</button>
-        <button class="primary" id="btnSignin">Se connecter</button>
+      <div class="toolbar">
+        <div class="auth" id="authBox">
+          <input type="email" id="email" placeholder="email"/>
+          <input type="password" id="password" placeholder="mot de passe"/>
+          <button class="ghost" id="btnSignup">Créer</button>
+          <button class="primary" id="btnSignin">Se connecter</button>
+        </div>
+        <div class="auth" id="userBox" style="display:none">
+          <span id="userEmail" class="pill"></span>
+          <button class="ghost" id="btnSignout">Se déconnecter</button>
+        </div>
+        <select id="yearSelect" title="Année"></select>
+        <button id="printBtn" class="primary">Imprimer</button>
       </div>
-      <div class="auth" id="userBox" style="display:none">
-        <span id="userEmail" class="pill"></span>
-        <button class="ghost" id="btnSignout">Se déconnecter</button>
-      </div>
-      <select id="yearSelect" title="Année"></select>
-      <button id="printBtn" class="primary">Imprimer</button>
     </div>
   </header>
 
@@ -121,91 +147,92 @@
     <div class="quote" id="bannerQuote">“Un pas après l’autre, avec douceur et sincérité.”</div>
   </section>
 
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tabbar" role="tablist" aria-label="Sections principales">
+      <button class="active" data-tab="priere" role="tab" aria-selected="true">🕌 Prière</button>
+      <button data-tab="quran" role="tab" aria-selected="false">📖 Coran</button>
+      <button data-tab="notes" role="tab" aria-selected="false">📝 Notes</button>
+    </div>
+  </div>
+
   <div id="appContent" style="display:none">
-    <div class="grid">
-      <!-- Left column -->
-      <section class="card">
-        <h3>🌿 Méta du mois</h3>
-        <div class="field">
-          <label for="themeMois">Thème du mois</label>
-          <select id="themeMois">
-            <option value="sabr">Sabr (Patience)</option>
-            <option value="ikhlas">Ikhlâs (Sincérité)</option>
-            <option value="rahma">Rahma (Miséricorde)</option>
-            <option value="amal">‘Amal (Espoir)</option>
-            <option value="baraka">Baraka (Bénédiction)</option>
-            <option value="nour">An Nour (Lumière)</option>
-            <option value="karim">Al-Karîm (Générosité)</option>
-            <option value="wahhab">Al-Wahhâb (Don gratuit)</option>
-            <option value="dhikr">Dhikr (Rappel)</option>
-            <option value="choukr">Choukr (Gratitude)</option>
-          </select>
-        </div>
-        <div class="field" style="margin-top:12px">
-          <label>Intentions du mois</label>
-          <textarea id="intentions"></textarea>
-        </div>
-        <div class="field" style="margin-top:12px">
-          <label>Objectifs Akhira</label>
-          <textarea id="objAkhira"></textarea>
-        </div>
-        <div class="field" style="margin-top:12px">
-          <label>Objectifs Dounia</label>
-          <textarea id="objDounia"></textarea>
-        </div>
-
-        <div class="field" style="margin-top:12px">
-          <label>Récompenses (débloquées par points)</label>
-          <div id="rewardsList"></div>
-          <div class="sep"></div>
-          <div style="display:flex; gap:8px; align-items:center">
-            <input id="newRewardText" type="text" placeholder="Ex: Sortie famille, livre…">
-            <select id="newRewardPoints">
-              <option value="50">50 pts</option>
-              <option value="100">100 pts</option>
-              <option value="200">200 pts</option>
+    <!-- Tab Prière -->
+    <section id="tab-priere" class="tab-content active">
+      <div class="grid">
+        <section class="card">
+          <h3>🌿 Méta du mois</h3>
+          <div class="field">
+            <label for="themeMois">Thème du mois</label>
+            <select id="themeMois">
+              <option value="sabr">Sabr (Patience)</option>
+              <option value="ikhlas">Ikhlâs (Sincérité)</option>
+              <option value="rahma">Rahma (Miséricorde)</option>
+              <option value="amal">‘Amal (Espoir)</option>
+              <option value="baraka">Baraka (Bénédiction)</option>
+              <option value="nour">An Nour (Lumière)</option>
+              <option value="karim">Al-Karîm (Générosité)</option>
+              <option value="wahhab">Al-Wahhâb (Don gratuit)</option>
+              <option value="dhikr">Dhikr (Rappel)</option>
+              <option value="choukr">Choukr (Gratitude)</option>
             </select>
-            <button class="ghost" id="addRewardBtn">Ajouter</button>
           </div>
-        </div>
-        <div class="field" style="margin-top:12px">
-          <label>Progression mensuelle</label>
-          <div class="progress"><div class="bar" id="progressBar"></div></div>
-          <div class="hint"><span id="pointsTotal">0</span> points — <span id="daysPerfect">0</span> jour(s) parfait(s)</div>
-        </div>
-        <div class="field" style="margin-top:12px">
-          <label><input type="checkbox" id="quranPointsToggle"> +1 point par verset mémorisé (optionnel)</label>
-        </div>
-      </section>
 
-      <!-- Right column -->
-      <section class="card">
-        <h3>🕌 Suivi Prière (quotidien)</h3>
-        <div class="prayer">
-          <table id="prayerTable">
-            <thead>
-              <tr>
-                <th>Jour</th>
-                <th>Fajr</th>
-                <th>Dhuhr</th>
-                <th>‘Asr</th>
-                <th>Maghrib</th>
-                <th>‘Isha</th>
-                <th style="min-width:180px">Objectif du jour</th>
-                <th>Atteint</th>
-                <th>Points (jour)</th>
-              </tr>
-            </thead>
-            <tbody id="prayerBody"></tbody>
-          </table>
-        </div>
-      </section>
+          <div class="field" style="margin-top:12px">
+            <label>Récompenses (débloquées par points)</label>
+            <div id="rewardsList"></div>
+            <div class="sep" style="height:1px;background:#eef2f2;margin:12px 0"></div>
+            <div style="display:grid; grid-template-columns:1fr auto auto; gap:8px; align-items:center">
+              <input id="newRewardText" type="text" placeholder="Ex: Sortie famille, livre…">
+              <select id="newRewardPoints">
+                <option value="50">50 pts</option>
+                <option value="100">100 pts</option>
+                <option value="200">200 pts</option>
+              </select>
+              <button class="ghost" id="addRewardBtn">Ajouter</button>
+            </div>
+          </div>
 
-      <!-- Quran Planner -->
+          <div class="field" style="margin-top:12px">
+            <label>Progression mensuelle</label>
+            <div class="progress"><div class="bar" id="progressBar"></div></div>
+            <div class="hint"><span id="pointsTotal">0</span> points — <span id="daysPerfect">0</span> jour(s) parfait(s)</div>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label><input type="checkbox" id="quranPointsToggle"> +1 point par verset mémorisé (optionnel)</label>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>🕌 Suivi Prière (quotidien)</h3>
+          <div class="prayer">
+            <table id="prayerTable">
+              <thead>
+                <tr>
+                  <th>Jour</th>
+                  <th>Fajr</th>
+                  <th>Dhuhr</th>
+                  <th>‘Asr</th>
+                  <th>Maghrib</th>
+                  <th>‘Isha</th>
+                  <th style="min-width:180px">Objectif du jour</th>
+                  <th>Atteint</th>
+                  <th>Points (jour)</th>
+                </tr>
+              </thead>
+              <tbody id="prayerBody"></tbody>
+            </table>
+          </div>
+          <div class="prayer-mobile" id="prayerCards"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- Tab Coran -->
+    <section id="tab-quran" class="tab-content">
       <section class="card">
         <h3>📖 Planification du Coran</h3>
-        <div class="hint">Crée un plan (Sourate + plage de versets), puis coche chaque verset mémorisé 🎉</div>
-        <div class="field" style="display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; align-items:end; margin-top:8px">
+        <div class="q-controls" style="margin-top:8px">
           <div>
             <label>Sourate</label>
             <input id="qpSurah" type="text" placeholder="Ex: Al-Baqara"/>
@@ -220,7 +247,6 @@
           </div>
           <div><button class="ghost" id="qpAddBtn">Ajouter</button></div>
         </div>
-
         <div class="q-grid" id="qPlans" style="margin-top:12px"></div>
         <div class="field" style="margin-top:12px">
           <label>Progression Coran (tous plans)</label>
@@ -228,7 +254,43 @@
           <div class="hint"><span id="quranLearned">0</span>/<span id="quranTotal">0</span> versets mémorisés</div>
         </div>
       </section>
-    </div>
+    </section>
+
+    <!-- Tab Notes -->
+    <section id="tab-notes" class="tab-content">
+      <div class="grid">
+        <section class="card">
+          <h3>📝 Intentions & Objectifs</h3>
+          <div class="field">
+            <label>Intentions du mois</label>
+            <textarea id="intentions"></textarea>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label>Objectifs Akhira</label>
+            <textarea id="objAkhira"></textarea>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label>Objectifs Dounia</label>
+            <textarea id="objDounia"></textarea>
+          </div>
+        </section>
+        <section class="card">
+          <h3>🌸 Gratitudes & 🌙 Petites victoires</h3>
+          <div class="field">
+            <label>Gratitudes quotidiennes</label>
+            <textarea id="gratitudes" placeholder="Alhamdulillah pour…"></textarea>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label>Petites victoires</label>
+            <textarea id="wins" placeholder="🎯 Ce qui a bien marché…"></textarea>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label>Notes libres</label>
+            <textarea id="notes" placeholder="Idées, rappels, du‘â…"></textarea>
+          </div>
+        </section>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -239,66 +301,30 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 /* ========= CONFIGURER ICI =========
-   1) Copie COLLE ton Project URL et ta anon key Supabase ci-dessous
-   2) Déploie ce fichier sur Netlify/Vercel/GitHub Pages
+   Colle ton Project URL + anon key
 */
-const SUPABASE_URL = "https://dyxjnhdiarxsydbugdqi.supabase.co";    // <-- à remplacer
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5eGpuaGRpYXJ4c3lkYnVnZHFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MTQ5MjEsImV4cCI6MjA3MDM5MDkyMX0.nLMhKec3xkO7t6tEE6JiAKTm64rPyGqg1YyQUGM5Py4";                      // <-- à remplacer
+const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";    // <-- à remplacer
+const SUPABASE_ANON = "YOUR-ANON-KEY";                      // <-- à remplacer
 /* ================================== */
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-/* ===== Theme palettes ===== */
-const THEME = {
-  sabr:["--s1","--s2","--s3"], ikhlas:["--i1","--i2","--i3"], rahma:["--r1","--r2","--r3"],
-  amal:["--a1","--a2","--a3"], baraka:["--b1","--b2","--b3"], nour:["--n1","--n2","--n3"],
-  karim:["--k1","--k2","--k3"], wahhab:["--w1","--w2","--w3"], dhikr:["--d1","--d2","--d3"],
-  choukr:["--c1","--c2","--c3"]
-};
-const BANNER = {
-  sabr:"LE MOIS DE SABR · La patience",
-  ikhlas:"LE MOIS D’IKHLÂS · La sincérité",
-  rahma:"LE MOIS DE RAHMA · La miséricorde",
-  amal:"LE MOIS D’AMAL · L’espoir",
-  baraka:"LE MOIS DE BARAKA · La bénédiction",
-  nour:"LE MOIS D’AN-NOUR · La lumière",
-  karim:"LE MOIS D’AL-KARÎM · La générosité",
-  wahhab:"LE MOIS D’AL-WAHHÂB · Le don",
-  dhikr:"LE MOIS DU DHIKR · Le rappel",
-  choukr:"LE MOIS DE CHOUKR · La gratitude"
-};
-const QUOTE = {
-  sabr:"“Sois constante, un pas après l’autre.”",
-  ikhlas:"“Les actions ne valent que par les intentions.”",
-  rahma:"“La douceur guérit ce que la dureté blesse.”",
-  amal:"“Quiconque craint Allah, Il lui donnera une issue.”",
-  baraka:"“Vois l’abondance dans la simplicité.”",
-  nour:"“Allah est la Lumière des cieux et de la terre.”",
-  karim:"“Donner au-delà des attentes.”",
-  wahhab:"“Tout don vient de Lui.”",
-  dhikr:"“Par le rappel d’Allah, les cœurs se tranquillisent.”",
-  choukr:"“Remercie pour le visible et l’invisible.”"
-};
-
-/* ===== Utils ===== */
 const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
 const $ = s => document.querySelector(s);
 function yearNow(){ return new Date().getFullYear(); }
 function monthNow(){ return new Date().getMonth(); }
 function daysInMonth(y,m){ return new Date(y, m+1, 0).getDate(); }
+const isMobile = () => window.matchMedia("(max-width: 760px)").matches;
+
+/* ===== Theme ===== */
+const THEME = { sabr:["#FDE3E9","#F9A6BE","#E35E83"] };
+function applyTheme(){
+  document.documentElement.style.setProperty("--acc1", THEME.sabr[0]);
+  document.documentElement.style.setProperty("--acc2", THEME.sabr[1]);
+  document.documentElement.style.setProperty("--acc3", THEME.sabr[2]);
+}
 
 /* ===== State ===== */
-let state = {
-  year: yearNow(),
-  month: monthNow(),
-  monthRow: null,   // months table row
-  prayers: {},      // day -> row
-  rewards: [],
-  quranPlans: [],
-  quranPoints: false,
-  theme: "sabr",
-  fields: { intentions:"", objAkhira:"", objDounia:"", gratitudes:"", wins:"", notes:"" }
-};
+let state = { year:yearNow(), month:monthNow(), monthRow:null, prayers:{}, rewards:[], quranPlans:[], quranPoints:false };
 
 /* ===== Auth UI ===== */
 async function refreshAuthUI(){
@@ -306,86 +332,64 @@ async function refreshAuthUI(){
   $("#authBox").style.display = user ? "none" : "flex";
   $("#userBox").style.display = user ? "flex" : "none";
   $("#appContent").style.display = user ? "block" : "none";
-  if(user){ $("#userEmail").textContent = user.email || user.phone || "connecté"; await loadAll(); }
+  if(user){ $("#userEmail").textContent = user.email || "connecté"; await loadAll(); }
 }
 
-/* ===== Supabase data access ===== */
+/* ===== Supabase data ===== */
 async function getOrCreateMonth(year, month){
   const { data: { user } } = await supabase.auth.getUser();
   if(!user) throw new Error("Non authentifié");
-  let { data: rows, error } = await supabase
-    .from("months").select("*")
-    .eq("user_id", user.id).eq("year", year).eq("month", month).limit(1);
+  let { data: rows, error } = await supabase.from("months").select("*").eq("user_id", user.id).eq("year", year).eq("month", month).limit(1);
   if(error) throw error;
   if(rows && rows.length) return rows[0];
-  const insert = { user_id: user.id, year, month };
+  const insert = { user_id:user.id, year, month };
   const { data, error:err2 } = await supabase.from("months").insert(insert).select("*").single();
   if(err2) throw err2;
   return data;
 }
-
 async function loadPrayers(month_id){
-  const map = {};
-  const { data, error } = await supabase.from("prayers").select("*").eq("month_id", month_id);
-  if(error) throw error;
-  data.forEach(r=> map[r.day] = r);
-  return map;
+  const map = {}; const { data, error } = await supabase.from("prayers").select("*").eq("month_id", month_id);
+  if(error) throw error; data.forEach(r=> map[r.day]=r); return map;
 }
 async function upsertPrayer(month_id, day, patch){
   const existing = state.prayers[day];
   if(existing){
     const { error } = await supabase.from("prayers").update(patch).eq("id", existing.id);
-    if(error) console.error(error);
-    Object.assign(existing, patch);
-    return existing;
+    if(error) console.error(error); Object.assign(existing, patch); return existing;
   }else{
     const row = { month_id, day, ...patch };
     const { data, error } = await supabase.from("prayers").insert(row).select("*").single();
-    if(error) console.error(error);
-    state.prayers[day] = data;
-    return data;
+    if(error) console.error(error); state.prayers[day]=data; return data;
   }
 }
-
 async function loadRewards(month_id){
-  const { data, error } = await supabase.from("rewards").select("*").eq("month_id", month_id).order("points", { ascending: true });
-  if(error) throw error;
-  return data || [];
+  const { data, error } = await supabase.from("rewards").select("*").eq("month_id", month_id).order("points",{ascending:true});
+  if(error) throw error; return data||[];
 }
 async function addReward(month_id, label, points){
   const { data, error } = await supabase.from("rewards").insert({ month_id, label, points, claimed:false }).select("*").single();
-  if(error) throw error;
-  state.rewards.push(data);
-  return data;
+  if(error) throw error; state.rewards.push(data); return data;
 }
 async function claimReward(id){
   const { error } = await supabase.from("rewards").update({ claimed:true }).eq("id", id);
-  if(error) throw error;
-  const r = state.rewards.find(x=>x.id===id); if(r) r.claimed=true;
+  if(error) throw error; const r = state.rewards.find(x=>x.id===id); if(r) r.claimed=true;
 }
-
 async function loadQuran(month_id){
   const { data: plans, error } = await supabase.from("quran_plans").select("*").eq("month_id", month_id);
   if(error) throw error;
-  const ids = plans.map(p=>p.id);
-  let versesByPlan = {};
+  const ids = plans.map(p=>p.id); let learnedByPlan = {};
   if(ids.length){
     const { data: verses, error:err2 } = await supabase.from("quran_plan_verses").select("*").in("plan_id", ids);
     if(err2) throw err2;
-    verses.forEach(v=>{
-      if(!versesByPlan[v.plan_id]) versesByPlan[v.plan_id] = {};
-      versesByPlan[v.plan_id][v.verse] = !!v.learned;
-    });
+    verses.forEach(v=>{ (learnedByPlan[v.plan_id] ||= {})[v.verse] = !!v.learned; });
   }
-  return plans.map(p=> ({ ...p, learned: versesByPlan[p.id] || {} }));
+  return plans.map(p=> ({ ...p, learned: learnedByPlan[p.id] || {} }));
 }
 async function addQuranPlan(month_id, surah, v_from, v_to){
   const { data: plan, error } = await supabase.from("quran_plans").insert({ month_id, surah, v_from, v_to }).select("*").single();
   if(error) throw error;
-  const verses = [];
-  for(let v=v_from; v<=v_to; v++){ verses.push({ plan_id: plan.id, verse: v, learned: false }); }
-  const { error: err2 } = await supabase.from("quran_plan_verses").insert(verses);
-  if(err2) throw err2;
+  const verses = []; for(let v=v_from; v<=v_to; v++){ verses.push({ plan_id: plan.id, verse: v, learned:false }); }
+  const { error:err2 } = await supabase.from("quran_plan_verses").insert(verses); if(err2) throw err2;
   state.quranPlans.push({ ...plan, learned: Object.fromEntries(verses.map(v=>[v.verse,false])) });
   return plan;
 }
@@ -394,223 +398,128 @@ async function toggleVerse(plan_id, verse, learned){
   if(error) throw error;
 }
 
-/* ===== Points rules (prayers) ===== */
-function computeDayPoints(row){
-  let p = 0;
-  p += row.fajr?1:0;
-  p += row.dhuhr?1:0;
-  p += row.asr?1:0;
-  p += row.maghrib?1:0;
-  p += row.isha?1:0;
-  if(row.achieved) p += 3;
-  const perfect = row.fajr && row.dhuhr && row.asr && row.maghrib && row.isha;
-  if(perfect) p += 2;
-  return p;
-}
+/* ===== Points ===== */
+function computeDayPoints(r){ let p=0; p+=r.fajr?1:0; p+=r.dhuhr?1:0; p+=r.asr?1:0; p+=r.maghrib?1:0; p+=r.isha?1:0; if(r.achieved) p+=3; if(r.fajr&&r.dhuhr&&r.asr&&r.maghrib&&r.isha) p+=2; return p; }
+function monthPoints(){ const prayerPts = Object.values(state.prayers).reduce((s,r)=> s+(r.points||0),0); const quranPts = state.quranPoints ? quranLearnedTotal() : 0; return prayerPts + quranPts; }
+function perfectDays(){ let n=0; Object.values(state.prayers).forEach(r=>{ if(r.fajr&&r.dhuhr&&r.asr&&r.maghrib&&r.isha) n++; }); return n; }
 
 /* ===== UI helpers ===== */
-function applyTheme(){
-  const t = state.theme || "sabr";
-  const vars = THEME[t] || THEME.sabr;
-  const root = document.documentElement;
-  root.style.setProperty("--acc1", getComputedStyle(root).getPropertyValue(vars[0]));
-  root.style.setProperty("--acc2", getComputedStyle(root).getPropertyValue(vars[1]));
-  root.style.setProperty("--acc3", getComputedStyle(root).getPropertyValue(vars[2]));
-  $("#bannerTitle").textContent = BANNER[t];
-  $("#bannerQuote").textContent = QUOTE[t];
-}
-function showToast(msg){
-  const t = $("#toast");
-  t.textContent = msg;
-  t.style.display = "block";
-  setTimeout(()=> t.style.display="none", 1600);
-}
-function confettiBurst(x, y){
-  const wrap = $("#confetti");
-  for(let i=0;i<14;i++){
-    const e = document.createElement("div"); e.className="c";
-    e.textContent = ["🎉","✨","🌟","💫","🟡","🟣","🟢"][Math.floor(Math.random()*7)];
-    const dx = (Math.random()*160 - 80), dy = (Math.random()*120 + 60);
-    e.style.setProperty("--x", x+"px"); e.style.setProperty("--y", y+"px");
-    e.style.setProperty("--x2", (x+dx)+"px"); e.style.setProperty("--y2", (y+dy)+"px");
-    wrap.appendChild(e);
-    setTimeout(()=> wrap.removeChild(e), 1300);
-  }
-}
+function showToast(msg){ const t=$("#toast"); t.textContent = msg; t.style.display="block"; setTimeout(()=> t.style.display="none", 1600); }
+function confettiBurst(x,y){ const wrap=$("#confetti"); for(let i=0;i<14;i++){ const e=document.createElement("div"); e.className="c"; e.textContent=["🎉","✨","🌟","💫","🟡","🟣","🟢"][Math.floor(Math.random()*7)]; const dx=(Math.random()*160-80), dy=(Math.random()*120+60); e.style.setProperty("--x",x+"px"); e.style.setProperty("--y",y+"px"); e.style.setProperty("--x2",(x+dx)+"px"); e.style.setProperty("--y2",(y+dy)+"px"); wrap.appendChild(e); setTimeout(()=> wrap.removeChild(e), 1300);} }
 
 /* ===== Rendering ===== */
 function buildYearSelect(){
-  const y = $("#yearSelect"); const base = yearNow();
-  y.innerHTML = "";
-  for(let dy=-2; dy<=3; dy++){
-    const val = base + dy;
-    const opt = document.createElement("option");
-    opt.value = val; opt.textContent = val; if(val===state.year) opt.selected=true;
-    y.appendChild(opt);
-  }
-  y.onchange = ()=>{ state.year = parseInt(y.value,10); loadAll(); };
+  const y=$("#yearSelect"); const base=yearNow(); y.innerHTML="";
+  for(let dy=-2; dy<=3; dy++){ const val=base+dy; const opt=document.createElement("option"); opt.value=val; opt.textContent=val; if(val===state.year) opt.selected=true; y.appendChild(opt); }
+  y.onchange=()=>{ state.year=parseInt(y.value,10); loadAll(); };
 }
 function buildMonthNav(){
-  const nav = $("#monthNav"); nav.innerHTML = "";
-  for(let i=0;i<12;i++){
-    const btn = document.createElement("button");
-    btn.className = "month" + (i===state.month ? " active" : "");
-    btn.innerHTML = MONTHS[i] + '<span class="spark"></span>';
-    btn.addEventListener("click", ()=>{
-      state.month = i; window.location.hash = `#/${state.year}/${String(i+1).padStart(2,'0')}`;
-      loadAll();
-    });
-    nav.appendChild(btn);
-  }
+  const nav=$("#monthNav"); nav.innerHTML=""; for(let i=0;i<12;i++){ const b=document.createElement("button"); b.className="month"+(i===state.month?" active":""); b.textContent=MONTHS[i]; b.addEventListener("click", ()=>{ state.month=i; window.location.hash=`#/${state.year}/${String(i+1).padStart(2,'0')}`; loadAll(); }); nav.appendChild(b); }
 }
-
 function renderRewards(){
-  const wrap = $("#rewardsList");
-  wrap.innerHTML = "";
+  const wrap=$("#rewardsList"); wrap.innerHTML="";
   state.rewards.forEach(r=>{
-    const row = document.createElement("div");
-    row.className = "q-plan";
-    row.innerHTML = `<div class="q-title">
-      <div><strong>${r.label}</strong> <span class="opt">${r.points} pts</span></div>
-      <div>${r.claimed? '<span class="pill">Réclamé ✅</span>' : `<button class="ghost" data-claim="${r.id}">${ monthPoints()>=r.points ? 'Réclamer' : 'Bloqué' }</button>`}</div>
-    </div>`;
+    const row=document.createElement("div"); row.className="q-plan";
+    row.innerHTML = `<div class="q-title"><div><strong>${r.label}</strong> <span class="opt">${r.points} pts</span></div>
+      <div>${r.claimed? '<span class="pill">Réclamé ✅</span>' : `<button class="ghost" data-claim="${r.id}">${ monthPoints()>=r.points ? 'Réclamer' : 'Bloqué' }</button>`}</div></div>`;
     wrap.appendChild(row);
   });
   wrap.querySelectorAll("button[data-claim]").forEach(btn=>{
-    const id = parseInt(btn.getAttribute("data-claim"),10);
-    const r = state.rewards.find(x=>x.id===id);
-    btn.disabled = !(monthPoints() >= r.points);
+    const id=parseInt(btn.getAttribute("data-claim"),10); const r=state.rewards.find(x=>x.id===id);
+    btn.disabled = !(monthPoints()>=r.points);
     btn.addEventListener("click", async ()=>{ await claimReward(id); renderRewards(); });
   });
 }
 
 function renderPrayerTable(){
-  const body = $("#prayerBody"); body.innerHTML="";
-  const days = daysInMonth(state.year, state.month);
+  const body=$("#prayerBody"); body.innerHTML=""; const days=daysInMonth(state.year,state.month);
   for(let d=1; d<=days; d++){
-    const row = state.prayers[d] || { day:d, fajr:false, dhuhr:false, asr:false, maghrib:false, isha:false, objective:"", achieved:false, points:0 };
-    const tr = document.createElement("tr");
-    const tdDay = document.createElement("td"); tdDay.className="daycol"; tdDay.textContent = String(d).padStart(2,"0"); tr.appendChild(tdDay);
-
-    const mkCheck = (key)=>{
-      const td = document.createElement("td");
-      const cb = document.createElement("input"); cb.type="checkbox"; cb.checked = !!row[key];
-      cb.addEventListener("change", async ()=>{
-        row[key] = cb.checked; row.points = computeDayPoints(row);
-        await upsertPrayer(state.monthRow.id, d, row);
-        state.prayers[d] = row;
-        updateTotals(); tdPts.textContent = row.points;
-      });
-      td.appendChild(cb); tr.appendChild(td);
-    };
+    const r = state.prayers[d] || {day:d,fajr:false,dhuhr:false,asr:false,maghrib:false,isha:false,objective:"",achieved:false,points:0};
+    const tr=document.createElement("tr");
+    const tdDay=document.createElement("td"); tdDay.className="daycol"; tdDay.textContent=String(d).padStart(2,"0"); tr.appendChild(tdDay);
+    const mkCheck=(k)=>{ const td=document.createElement("td"); const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=!!r[k];
+      cb.addEventListener("change", async ()=>{ r[k]=cb.checked; r.points=computeDayPoints(r); await upsertPrayer(state.monthRow.id,d,r); state.prayers[d]=r; updateTotals(); tdPts.textContent=r.points; if(isMobile()) syncPrayerCard(d,r); });
+      td.appendChild(cb); tr.appendChild(td); };
     mkCheck("fajr"); mkCheck("dhuhr"); mkCheck("asr"); mkCheck("maghrib"); mkCheck("isha");
-
-    const tdObj = document.createElement("td");
-    const input = document.createElement("input");
-    input.type="text"; input.placeholder="Ex: À l’heure / Sunna Fajr / Mosquée …"; input.value = row.objective || "";
-    input.addEventListener("input", async ()=>{
-      row.objective = input.value; await upsertPrayer(state.monthRow.id, d, row); state.prayers[d] = row;
-    });
-    tdObj.appendChild(input); tr.appendChild(tdObj);
-
-    const tdAch = document.createElement("td");
-    const cbA = document.createElement("input"); cbA.type="checkbox"; cbA.checked = !!row.achieved;
-    cbA.addEventListener("change", async ()=>{
-      row.achieved = cbA.checked; row.points = computeDayPoints(row);
-      await upsertPrayer(state.monthRow.id, d, row); state.prayers[d] = row;
-      updateTotals(); tdPts.textContent = row.points;
-    });
+    const tdObj=document.createElement("td"); const inp=document.createElement("input"); inp.type="text"; inp.placeholder="Objectif du jour"; inp.value=r.objective||"";
+    inp.addEventListener("input", async ()=>{ r.objective=inp.value; await upsertPrayer(state.monthRow.id,d,r); state.prayers[d]=r; if(isMobile()) syncPrayerCard(d,r); });
+    tdObj.appendChild(inp); tr.appendChild(tdObj);
+    const tdAch=document.createElement("td"); const cbA=document.createElement("input"); cbA.type="checkbox"; cbA.checked=!!r.achieved;
+    cbA.addEventListener("change", async ()=>{ r.achieved=cbA.checked; r.points=computeDayPoints(r); await upsertPrayer(state.monthRow.id,d,r); state.prayers[d]=r; updateTotals(); tdPts.textContent=r.points; if(isMobile()) syncPrayerCard(d,r); });
     tdAch.appendChild(cbA); tr.appendChild(tdAch);
-
-    const tdPts = document.createElement("td"); tdPts.className="points"; tdPts.textContent = row.points || 0; tr.appendChild(tdPts);
-
-    if(d%7===0){ tr.classList.add("wksep"); }
+    const tdPts=document.createElement("td"); tdPts.className="points"; tdPts.textContent=r.points||0; tr.appendChild(tdPts);
     body.appendChild(tr);
   }
 }
-
-function quranTotalVerses(){
-  return state.quranPlans.reduce((sum,p)=> sum + (p.v_to - p.v_from + 1), 0);
-}
-function quranLearnedTotal(){
-  let s=0;
-  state.quranPlans.forEach(p=>{
-    for(let v=p.v_from; v<=p.v_to; v++){ if(p.learned && p.learned[v]) s++; }
+function renderPrayerCards(){
+  const wrap=$("#prayerCards"); wrap.innerHTML=""; const days=daysInMonth(state.year,state.month);
+  for(let d=1; d<=days; d++){
+    const r = state.prayers[d] || {day:d,fajr:false,dhuhr:false,asr:false,maghrib:false,isha:false,objective:"",achieved:false,points:0};
+    const card=document.createElement("div"); card.className="p-card"; card.id="pc-"+d;
+    card.innerHTML = `<div class="p-head"><div><strong>Jour ${String(d).padStart(2,"0")}</strong></div><div class="p-points">${r.points||0} pts</div></div>
+      <div class="p-grid">${["Fajr","Dhuhr","‘Asr","Maghrib","‘Isha"].map((n,i)=>{ const k=["fajr","dhuhr","asr","maghrib","isha"][i]; const chk=r[k]?"checked":""; return `<label><input type="checkbox" data-day="${d}" data-k="${k}" ${chk}/><span>${n}</span></label>`; }).join("")}</div>
+      <div class="p-goal"><input type="text" value="${r.objective||""}" placeholder="Objectif du jour"/>
+        <label class="chip"><input type="checkbox" data-day="${d}" data-k="achieved" ${r.achieved?"checked":""}/> Atteint</label>
+        <span class="chip">Total <b id="pcpts-${d}">${r.points||0}</b> pts</span></div>`;
+    wrap.appendChild(card);
+  }
+  wrap.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+    cb.addEventListener("change", async ()=>{
+      const d=parseInt(cb.getAttribute("data-day"),10); const k=cb.getAttribute("data-k");
+      const r = state.prayers[d] || { day:d, fajr:false, dhuhr:false, asr:false, maghrib:false, isha:false, objective:"", achieved:false, points:0 };
+      r[k]=cb.checked; r.points=computeDayPoints(r); await upsertPrayer(state.monthRow.id,d,r); state.prayers[d]=r; updateTotals(); syncPrayerRow(d,r);
+    });
   });
-  return s;
+  wrap.querySelectorAll('.p-goal input[type="text"]').forEach(inp=>{
+    inp.addEventListener("input", async ()=>{
+      const d=parseInt(inp.closest(".p-card").id.replace("pc-",""),10); const r=state.prayers[d] || { day:d };
+      r.objective=inp.value; await upsertPrayer(state.monthRow.id,d,r); state.prayers[d]=r; syncPrayerRow(d,r);
+    });
+  });
 }
-function quranOverallProgress(){
-  const total = quranTotalVerses();
-  const learned = quranLearnedTotal();
-  const pct = Math.min(100, Math.round(100*learned/Math.max(1,total)));
-  $("#quranTotal").textContent = total;
-  $("#quranLearned").textContent = learned;
-  $("#quranProgressBar").style.width = pct + "%";
+function syncPrayerCard(d,r){
+  const card=document.getElementById("pc-"+d); if(!card) return;
+  ["fajr","dhuhr","asr","maghrib","isha"].forEach(k=>{ const cb=card.querySelector(`input[data-k="${k}"]`); if(cb) cb.checked=!!r[k]; });
+  const cbA=card.querySelector('input[data-k="achieved"]'); if(cbA) cbA.checked=!!r.achieved;
+  const pts=card.querySelector("#pcpts-"+d); if(pts) pts.textContent=r.points||0;
+  const goal=card.querySelector('.p-goal input[type="text"]'); if(goal) goal.value=r.objective||"";
 }
+function syncPrayerRow(d,r){
+  const tbody=$("#prayerBody"); if(!tbody) return; const tr=tbody.children[d-1]; if(!tr) return;
+  const boxes=tr.querySelectorAll('input[type="checkbox"]');
+  ["fajr","dhuhr","asr","maghrib","isha"].forEach((k,i)=>{ if(boxes[i]) boxes[i].checked=!!r[k]; });
+  const goal=tr.querySelector('td:nth-child(7) input'); if(goal) goal.value=r.objective||"";
+  const ach=tr.querySelector('td:nth-child(8) input'); if(ach) ach.checked=!!r.achieved;
+  const pts=tr.querySelector('td.points'); if(pts) pts.textContent=r.points||0;
+}
+
+function quranTotalVerses(){ return state.quranPlans.reduce((s,p)=> s+(p.v_to-p.v_from+1), 0); }
+function quranLearnedTotal(){ let s=0; state.quranPlans.forEach(p=>{ for(let v=p.v_from; v<=p.v_to; v++){ if(p.learned && p.learned[v]) s++; } }); return s; }
+function quranOverallProgress(){ const t=quranTotalVerses(), l=quranLearnedTotal(); const pct=Math.min(100, Math.round(100*l/Math.max(1,t))); $("#quranTotal").textContent=t; $("#quranLearned").textContent=l; $("#quranProgressBar").style.width=pct+"%"; }
 async function onVerseToggle(plan, verse, checkbox){
-  plan.learned[verse] = checkbox.checked;
-  await toggleVerse(plan.id, verse, checkbox.checked);
-  if(checkbox.checked){
-    const rect = checkbox.getBoundingClientRect();
-    showToast(`MashaAllah ! Verset ${verse} de ${plan.surah} mémorisé 🌸`);
-    confettiBurst(rect.left + rect.width/2, rect.top + rect.height/2);
-    if(state.quranPoints){ updateTotals(); }
-  } else { updateTotals(); }
-  quranOverallProgress();
+  plan.learned[verse] = checkbox.checked; await toggleVerse(plan.id, verse, checkbox.checked);
+  if(checkbox.checked){ const r=checkbox.getBoundingClientRect(); showToast(`MashaAllah ! Verset ${verse} de ${plan.surah} mémorisé 🎉`); confettiBurst(r.left+r.width/2, r.top+r.height/2); }
+  if(state.quranPoints) updateTotals(); quranOverallProgress();
 }
 function renderQuranPlans(){
-  const root = $("#qPlans"); root.innerHTML="";
-  state.quranPlans.forEach((p)=>{
-    const wrap = document.createElement("div"); wrap.className="q-plan";
-    const title = document.createElement("div"); title.className="q-title";
-    const left = document.createElement("div");
-    left.innerHTML = `<strong>${p.surah}</strong> <span class="opt">versets ${p.v_from}–${p.v_to}</span>`;
-    const right = document.createElement("div");
-    const del = document.createElement("button"); del.className="ghost"; del.textContent="Supprimer";
-    del.addEventListener("click", async ()=>{
-      await supabase.from("quran_plans").delete().eq("id", p.id);
-      state.quranPlans = state.quranPlans.filter(x=>x.id!==p.id);
-      renderQuranPlans(); updateTotals(); quranOverallProgress();
-    });
-    right.appendChild(del);
-    title.appendChild(left); title.appendChild(right); wrap.appendChild(title);
-
-    const verses = document.createElement("div"); verses.className="q-verses";
-    for(let v=p.v_from; v<=p.v_to; v++){
-      const chip = document.createElement("label"); chip.className="v-chip";
-      const cb = document.createElement("input"); cb.type="checkbox"; cb.checked = !!(p.learned && p.learned[v]);
-      cb.addEventListener("change", ()=> onVerseToggle(p, v, cb));
-      const txt = document.createElement("span"); txt.textContent = v;
-      chip.appendChild(cb); chip.appendChild(txt);
-      verses.appendChild(chip);
-    }
+  const root=$("#qPlans"); root.innerHTML="";
+  state.quranPlans.forEach(p=>{
+    const wrap=document.createElement("div"); wrap.className="q-plan";
+    const title=document.createElement("div"); title.className="q-title";
+    title.innerHTML = `<div><strong>${p.surah}</strong> <span class="opt">versets ${p.v_from}–${p.v_to}</span></div>`;
+    const del=document.createElement("button"); del.className="ghost"; del.textContent="Supprimer";
+    del.addEventListener("click", async ()=>{ await supabase.from("quran_plans").delete().eq("id", p.id); state.quranPlans=state.quranPlans.filter(x=>x.id!==p.id); renderQuranPlans(); updateTotals(); quranOverallProgress(); });
+    title.appendChild(del); wrap.appendChild(title);
+    const verses=document.createElement("div"); verses.className="q-verses";
+    for(let v=p.v_from; v<=p.v_to; v++){ const chip=document.createElement("label"); chip.className="v-chip"; const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=!!(p.learned && p.learned[v]); cb.addEventListener("change", ()=> onVerseToggle(p, v, cb)); const txt=document.createElement("span"); txt.textContent=v; chip.appendChild(cb); chip.appendChild(txt); verses.appendChild(chip); }
     wrap.appendChild(verses);
-
-    const planProg = document.createElement("div"); planProg.className="q-progress";
-    const progBar = document.createElement("div"); progBar.className="progress"; progBar.style.flex=1;
-    const inner = document.createElement("div"); inner.className="bar";
-    const learned = Object.values(p.learned||{}).filter(Boolean).length;
-    const total = (p.v_to - p.v_from + 1);
-    inner.style.width = Math.round(100*learned/Math.max(1,total)) + "%";
-    progBar.appendChild(inner);
-    const pct = document.createElement("div"); pct.className="q-pct"; text = `${learned}/${total}`; pct.textContent = text;
-    planProg.appendChild(progBar); planProg.appendChild(pct);
-    wrap.appendChild(planProg);
-
+    const prog=document.createElement("div"); prog.className="progress"; const inner=document.createElement("div"); inner.className="bar";
+    const learned=Object.values(p.learned||{}).filter(Boolean).length; const total=(p.v_to-p.v_from+1); inner.style.width=Math.round(100*learned/Math.max(1,total))+"%"; prog.appendChild(inner); wrap.appendChild(prog);
     root.appendChild(wrap);
   });
   quranOverallProgress();
 }
 
-function monthPoints(){
-  const prayerPts = Object.values(state.prayers).reduce((sum, r)=> sum + (r.points || 0), 0);
-  const quranPts  = state.quranPoints ? quranLearnedTotal() : 0;
-  return prayerPts + quranPts;
-}
-function perfectDays(){
-  let n=0; Object.values(state.prayers).forEach(r=>{ if(r.fajr&&r.dhuhr&&r.asr&&r.maghrib&&r.isha) n++; });
-  return n;
-}
 function updateTotals(){
   $("#pointsTotal").textContent = monthPoints();
   $("#daysPerfect").textContent = perfectDays();
@@ -622,7 +531,7 @@ function updateTotals(){
   renderRewards();
 }
 
-/* ===== Load all data for current month ===== */
+/* ===== Load all ===== */
 async function loadAll(){
   try{
     $("#appContent").style.display = "none";
@@ -631,63 +540,64 @@ async function loadAll(){
     buildYearSelect(); buildMonthNav();
     state.monthRow = await getOrCreateMonth(state.year, state.month);
     state.prayers = await loadPrayers(state.monthRow.id);
-    renderPrayerTable();
-    state.rewards = await loadRewards(state.monthRow.id);
-    renderRewards();
-    state.quranPlans = await loadQuran(state.monthRow.id);
-    renderQuranPlans();
-    $("#themeMois").value = state.theme;
-    $("#themeMois").onchange = ()=>{ state.theme = $("#themeMois").value; applyTheme(); };
-    $("#quranPointsToggle").checked = !!state.quranPoints;
-    $("#quranPointsToggle").onchange = ()=>{ state.quranPoints = $("#quranPointsToggle").checked; updateTotals(); };
+    renderPrayerTable(); renderPrayerCards();
+    state.rewards = await loadRewards(state.monthRow.id); renderRewards();
+    state.quranPlans = await loadQuran(state.monthRow.id); renderQuranPlans();
+    $("#quranPointsToggle").checked = !!state.quranPoints; $("#quranPointsToggle").onchange = ()=>{ state.quranPoints = $("#quranPointsToggle").checked; updateTotals(); };
     applyTheme(); updateTotals();
     $("#appContent").style.display = "block";
-  }catch(e){
-    console.error(e);
-    alert("Erreur de chargement : " + e.message);
-  }
+  }catch(e){ console.error(e); alert("Erreur de chargement : "+e.message); }
 }
 
 /* ===== Events ===== */
 $("#btnSignup").addEventListener("click", async ()=>{
-  const email = $("#email").value.trim(); const password = $("#password").value;
+  const email=$("#email").value.trim(); const password=$("#password").value;
   const { error } = await supabase.auth.signUp({ email, password });
   if(error) return alert(error.message);
   alert("Compte créé. Vérifie ton email (si confirmation activée).");
   await refreshAuthUI();
 });
 $("#btnSignin").addEventListener("click", async ()=>{
-  const email = $("#email").value.trim(); const password = $("#password").value;
+  const email=$("#email").value.trim(); const password=$("#password").value;
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if(error) return alert(error.message);
   await refreshAuthUI();
 });
-$("#btnSignout").addEventListener("click", async ()=>{
-  await supabase.auth.signOut();
-  await refreshAuthUI();
-});
+$("#btnSignout").addEventListener("click", async ()=>{ await supabase.auth.signOut(); await refreshAuthUI(); });
 $("#printBtn").addEventListener("click", ()=> window.print());
 
 $("#addRewardBtn").addEventListener("click", async ()=>{
-  const text = $("#newRewardText").value.trim();
-  const pts = parseInt($("#newRewardPoints").value,10);
-  if(!text) return;
-  await addReward(state.monthRow.id, text, pts);
-  $("#newRewardText").value="";
-  renderRewards();
+  const text=$("#newRewardText").value.trim(); const pts=parseInt($("#newRewardPoints").value,10);
+  if(!text) return; await addReward(state.monthRow.id, text, pts); $("#newRewardText").value=""; renderRewards();
 });
 
 $("#qpAddBtn").addEventListener("click", async ()=>{
-  const s = $("#qpSurah").value.trim();
-  const f = parseInt($("#qpFrom").value,10);
-  const t = parseInt($("#qpTo").value,10);
+  const s=$("#qpSurah").value.trim(); const f=parseInt($("#qpFrom").value,10); const t=parseInt($("#qpTo").value,10);
   if(!s || !f || !t || t<f) return alert("Renseigne la sourate et une plage valide.");
-  await addQuranPlan(state.monthRow.id, s, f, t);
-  $("#qpSurah").value=""; $("#qpFrom").value=""; $("#qpTo").value="";
+  await addQuranPlan(state.monthRow.id, s, f, t); $("#qpSurah").value=""; $("#qpFrom").value=""; $("#qpTo").value="";
   renderQuranPlans(); updateTotals();
 });
 
 window.addEventListener("hashchange", loadAll);
+window.addEventListener("resize", ()=>{ renderPrayerCards(); renderPrayerTable(); });
+
+/* ===== Tabs logic ===== */
+document.querySelectorAll(".tabbar button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tabbar button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.getAttribute("data-tab");
+    document.querySelectorAll(".tab-content").forEach(p=>p.classList.remove("active"));
+    $("#tab-"+tab).classList.add("active");
+  });
+});
+
+/* ===== PWA registration ===== */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}
 
 /* ===== Init ===== */
 (async function init(){
@@ -697,85 +607,7 @@ window.addEventListener("hashchange", loadAll);
 </script>
 
 <!--
-=====================
-SQL Supabase à exécuter
-=====================
-
--- months
-create table if not exists months (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
-  year int not null,
-  month int not null,
-  unique (user_id, year, month)
-);
-alter table months enable row level security;
-create policy "own months"
-on months for all
-using (auth.uid() = user_id)
-with check (auth.uid() = user_id);
-
--- prayers
-create table if not exists prayers (
-  id bigserial primary key,
-  month_id uuid not null references months(id) on delete cascade,
-  day int not null,
-  fajr bool default false,
-  dhuhr bool default false,
-  asr bool default false,
-  maghrib bool default false,
-  isha bool default false,
-  objective text,
-  achieved bool default false,
-  points int default 0,
-  unique (month_id, day)
-);
-alter table prayers enable row level security;
-create policy "own prayers"
-on prayers for all
-using (exists (select 1 from months m where m.id = month_id and m.user_id = auth.uid()))
-with check (exists (select 1 from months m where m.id = month_id and m.user_id = auth.uid()));
-
--- rewards
-create table if not exists rewards (
-  id bigserial primary key,
-  month_id uuid not null references months(id) on delete cascade,
-  label text not null,
-  points int not null,
-  claimed bool default false
-);
-alter table rewards enable row level security;
-create policy "own rewards"
-on rewards for all
-using (exists (select 1 from months m where m.id = month_id and m.user_id = auth.uid()))
-with check (exists (select 1 from months m where m.id = month_id and m.user_id = auth.uid()));
-
--- quran_plans
-create table if not exists quran_plans (
-  id uuid primary key default gen_random_uuid(),
-  month_id uuid not null references months(id) on delete cascade,
-  surah text not null,
-  v_from int not null,
-  v_to int not null
-);
-alter table quran_plans enable row level security;
-create policy "own quran_plans"
-on quran_plans for all
-using (exists (select 1 from months m where m.id = month_id and m.user_id = auth.uid()))
-with check (exists (select 1 from months m where m.id = month_id and m.user_id = auth.uid()));
-
--- quran_plan_verses
-create table if not exists quran_plan_verses (
-  id bigserial primary key,
-  plan_id uuid not null references quran_plans(id) on delete cascade,
-  verse int not null,
-  learned bool default false,
-  unique (plan_id, verse)
-);
-alter table quran_plan_verses enable row level security;
-create policy "own quran_plan_verses"
-on quran_plan_verses for all
-using (exists (select 1 from quran_plans p join months m on m.id=p.month_id where p.id=plan_id and m.user_id=auth.uid()))
-with check (exists (select 1 from quran_plans p join months m on m.id=p.month_id where p.id=plan_id and m.user_id=auth.uid()));
+SQL Supabase à exécuter = identique aux versions précédentes (tables months, prayers, rewards, quran_plans, quran_plan_verses + RLS).
 -->
+</body>
 </html>
